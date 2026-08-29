@@ -31,5 +31,10 @@ dev  A      194.87.190.245
 www  CNAME  itzephir.com.
 ```
 
-TLS certificates must be requested only after all records resolve to the new
-server.
+## HTTPS
+
+One Let's Encrypt certificate covers `itzephir.com`, `www.itzephir.com`, and
+`dev.itzephir.com`. Certbot renews it automatically with the webroot challenge
+stored in `/var/www/letsencrypt`; nginx keeps that challenge path available over
+HTTP and redirects all other requests to HTTPS. `www.itzephir.com` redirects to
+the canonical `itzephir.com` hostname.
