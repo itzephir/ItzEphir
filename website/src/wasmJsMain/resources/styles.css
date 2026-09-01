@@ -3,6 +3,22 @@
     background: #171719;
 }
 
+@font-face {
+    font-family: "Site Sans";
+    src: url("/composeResources/com.itzephir.website.generated.resources/font/roboto_f99820f9f1c7c171.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Site Mono";
+    src: url("/composeResources/com.itzephir.website.generated.resources/font/roboto_mono_e7069fe300d4629b.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 100 700;
+    font-display: swap;
+}
+
 * {
     box-sizing: border-box;
 }
@@ -24,7 +40,7 @@ body,
 body {
     overflow: hidden;
     background: #171719;
-    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-family: "Site Sans", sans-serif;
 }
 
 canvas {
@@ -39,7 +55,6 @@ canvas {
     overflow: auto;
     background: #171719;
     color: #f0eaef;
-    transition: opacity 320ms ease, visibility 320ms ease;
 }
 
 .compose-ready .boot-screen {
@@ -48,9 +63,14 @@ canvas {
 }
 
 .shell-page {
+    visibility: hidden;
     width: 100%;
     min-height: 100%;
     padding: 0 44px 56px;
+}
+
+.shell-ready .shell-page {
+    visibility: visible;
 }
 
 .shell-header {
@@ -64,15 +84,16 @@ canvas {
 .shell-brand {
     display: flex;
     flex-direction: column;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 12px;
+    font-family: "Site Mono", monospace;
+    font-size: 13px;
     line-height: 15px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.5px;
 }
 
 .shell-brand span {
     color: #c9c2c8;
-    font-size: 10px;
+    font-size: 11px;
+    line-height: 15px;
 }
 
 .shell-theme {
@@ -83,10 +104,11 @@ canvas {
     border-radius: 999px;
     background: #252326;
     color: #c9c2c8;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 10px;
+    font-family: "Site Mono", monospace;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.04em;
+    line-height: 15px;
+    letter-spacing: 0.5px;
 }
 
 .shell-theme i {
@@ -101,7 +123,7 @@ canvas {
     grid-template-columns: minmax(0, 5fr) minmax(280px, 3fr);
     gap: 52px;
     align-items: center;
-    padding-top: 74px;
+    padding-top: 79px;
 }
 
 .shell-copy {
@@ -110,22 +132,27 @@ canvas {
 
 .shell-eyebrow {
     display: inline-block;
-    padding: 8px 14px;
+    padding: 9px 14px;
     border-radius: 999px;
     background: #252326;
     color: #a8c7d5;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: "Site Mono", monospace;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.04em;
+    line-height: 15px;
+    letter-spacing: 0.5px;
+}
+
+.shell-eyebrow > span {
+    display: inline;
 }
 
 .shell-copy h1 {
-    margin: 18px 0 0;
-    font-size: clamp(58px, 6vw, 76px);
+    margin: 29px 0 0;
+    font-size: 76px;
     font-weight: 900;
-    line-height: 1;
-    letter-spacing: -0.045em;
+    line-height: 76px;
+    letter-spacing: -3.2px;
 }
 
 .shell-copy h2 {
@@ -138,11 +165,11 @@ canvas {
 .shell-role {
     margin: 8px 0 0;
     color: #dca5d2;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 12px;
+    font-family: "Site Mono", monospace;
+    font-size: 13px;
     font-weight: 700;
     line-height: 18px;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.5px;
 }
 
 .shell-lead {
@@ -161,11 +188,19 @@ canvas {
 }
 
 .shell-button {
+    display: inline-flex;
+    height: 52px;
     padding: 17px 26px;
     border-radius: 999px;
-    font-size: 14px;
+    align-items: center;
+    justify-content: center;
+    font-family: "Site Mono", monospace;
+    font-size: 13px;
     font-weight: 700;
+    line-height: 18px;
+    letter-spacing: 0.5px;
     text-decoration: none;
+    white-space: nowrap;
 }
 
 .shell-button-primary {
@@ -173,9 +208,17 @@ canvas {
     color: #44213c;
 }
 
+.shell-button-primary > span {
+    display: inline;
+}
+
 .shell-button-secondary {
     background: #294b57;
     color: #c4e7f5;
+}
+
+.shell-button-secondary > span {
+    display: inline;
 }
 
 .shell-portrait {
@@ -192,6 +235,130 @@ canvas {
     object-fit: cover;
 }
 
+/* Browser text and Compose/Skia use different glyph metrics on macOS.
+   Keep the Linux baseline untouched and compensate only on Apple desktops. */
+html.platform-macos .shell-brand {
+    transform: translate(1px, 5px) scale(1.0183, 1.0278);
+    transform-origin: left top;
+}
+
+html.platform-macos .shell-theme {
+    width: 91px;
+    transform: translateY(3px);
+}
+
+html.platform-macos .shell-eyebrow {
+    display: inline-flex;
+    width: 140px;
+    padding: 10px 14px 8px;
+    transform: translateY(2px);
+}
+
+html.platform-macos .shell-eyebrow > span {
+    display: inline-block;
+    transform: scale(1.0476, 0.98);
+    transform-origin: left center;
+}
+
+html.platform-macos .shell-copy h1 {
+    transform: scale(1.0045, 0.9797);
+    transform-origin: left top;
+}
+
+html.platform-macos .shell-copy h2 {
+    transform: translateY(2px) scale(0.9855, 1.05);
+    transform-origin: left top;
+}
+
+html.platform-macos .shell-role {
+    transform: translate(1px, 2px) scaleX(1.0234);
+    transform-origin: left top;
+}
+
+html.platform-macos .shell-lead {
+    transform: translate(1px, -1px) scaleX(0.9911);
+    transform-origin: left top;
+}
+
+html.platform-macos .shell-actions {
+    transform: translateY(-5px);
+}
+
+html.platform-macos .shell-button {
+    justify-content: flex-start;
+    text-indent: 1px;
+}
+
+html.platform-macos .shell-button-primary {
+    width: 208px;
+}
+
+html.platform-macos .shell-button-primary > span {
+    display: inline-block;
+    transform: scaleX(1.0405);
+    transform-origin: left center;
+}
+
+html.platform-macos .shell-button-secondary {
+    width: 156px;
+}
+
+html.platform-macos .shell-button-secondary > span {
+    display: inline-block;
+    transform: scale(1.0404, 0.8182);
+    transform-origin: left center;
+}
+
+html.platform-macos .shell-portrait img {
+    transform: translateY(-1px);
+}
+
+html.platform-linux .shell-brand {
+    transform: translateY(5px);
+}
+
+html.platform-linux .shell-theme {
+    transform: translateY(3px);
+}
+
+html.platform-linux .shell-eyebrow {
+    transform: translateY(2px);
+}
+
+html.platform-linux .shell-copy h1 {
+    transform: translateY(-2px);
+}
+
+html.platform-linux .shell-copy h2 {
+    transform: translateY(3px);
+}
+
+html.platform-linux .shell-role {
+    transform: translateY(4px) scaleY(1.2222);
+    transform-origin: left center;
+}
+
+html.platform-linux .shell-lead {
+    transform: translateY(-2px) scale(1.0035, 1.0976);
+    transform-origin: left top;
+}
+
+html.platform-linux .shell-actions {
+    transform: translateY(-5px);
+}
+
+html.platform-linux .shell-button {
+    justify-content: flex-start;
+}
+
+html.platform-linux .shell-button-primary {
+    width: 204px;
+}
+
+html.platform-linux .shell-button-secondary {
+    margin-left: -2px;
+}
+
 .shell-status {
     display: flex;
     position: fixed;
@@ -202,7 +369,7 @@ canvas {
     flex-direction: column;
     align-items: flex-end;
     color: #918991;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: "Site Mono", monospace;
     font-size: 10px;
 }
 
@@ -265,7 +432,7 @@ canvas {
     }
 
     .shell-theme {
-        padding: 10px 13px;
+        padding: 12px 14px;
     }
 
     .shell-hero {
@@ -273,26 +440,110 @@ canvas {
         flex-direction: column;
         align-items: stretch;
         gap: 44px;
-        padding-top: 38px;
+        padding-top: 43px;
     }
 
     .shell-copy h1 {
-        font-size: clamp(43px, 13vw, 54px);
-        letter-spacing: -0.04em;
+        margin-top: 20px;
+        font-size: 52px;
+        line-height: 54px;
+        letter-spacing: -2px;
     }
 
     .shell-copy h2 {
-        font-size: 19px;
-        line-height: 25px;
+        font-size: 22px;
+        line-height: 28px;
     }
 
     .shell-lead {
-        font-size: 16px;
-        line-height: 25px;
+        font-size: 18px;
+        line-height: 28px;
+    }
+
+    .shell-actions {
+        margin-top: 21px;
+    }
+
+    .shell-button {
+        padding-right: 18px;
+        padding-left: 18px;
+    }
+
+    .shell-portrait {
+        place-items: start;
     }
 
     .shell-portrait img {
         width: min(78vw, 260px);
+    }
+
+    html.platform-macos .shell-theme {
+        width: 83px;
+    }
+
+    html.platform-macos .shell-copy h1 {
+        transform: translate(1px, 5px) scaleX(0.9903);
+    }
+
+    html.platform-macos .shell-copy h2 {
+        transform: translateY(4px) scale(0.9855, 1.05);
+    }
+
+    html.platform-macos .shell-role {
+        transform: translate(1px, 4px) scaleX(1.0234);
+    }
+
+    html.platform-macos .shell-lead {
+        transform: translateX(1px) scaleX(0.9877);
+    }
+
+    html.platform-macos .shell-actions {
+        margin-top: 27px;
+        transform: none;
+    }
+
+    html.platform-macos .shell-button-primary {
+        width: 192px;
+    }
+
+    html.platform-macos .shell-button-secondary {
+        width: 140px;
+    }
+
+    html.platform-macos .shell-portrait img {
+        width: min(78vw, 254px);
+        transform: scaleX(1.0236);
+        transform-origin: left center;
+    }
+
+    html.platform-linux .shell-copy h1 {
+        transform: translateY(4px);
+    }
+
+    html.platform-linux .shell-copy h2 {
+        transform: translateY(5px);
+    }
+
+    html.platform-linux .shell-role {
+        transform: translateY(6px) scaleY(1.2222);
+    }
+
+    html.platform-linux .shell-lead {
+        transform: scaleX(1.0046);
+    }
+
+    html.platform-linux .shell-actions {
+        margin-top: 27px;
+        transform: none;
+    }
+
+    html.platform-linux .shell-button-primary {
+        width: 188px;
+    }
+
+    html.platform-linux .shell-portrait img {
+        transform: scaleY(0.9755);
+        transform-origin: left top;
     }
 
     .shell-status {

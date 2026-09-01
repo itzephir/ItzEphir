@@ -56,6 +56,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.itzephir.website.generated.resources.Res
 import com.itzephir.website.generated.resources.avatar
+import com.itzephir.website.generated.resources.roboto_f99820f9f1c7c171
+import com.itzephir.website.generated.resources.roboto_mono_e7069fe300d4629b
+import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 
 private val DustyPink = Color(0xFFC784B9)
@@ -109,53 +112,53 @@ private val LightColors = lightColorScheme(
     outlineVariant = Color(0xFFD7CBD3),
 )
 
-private val SiteTypography = Typography(
+private fun siteTypography(fontFamily: FontFamily, monoFontFamily: FontFamily) = Typography(
     displayLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = fontFamily,
         fontSize = 76.sp,
         lineHeight = 76.sp,
         fontWeight = FontWeight.Black,
         letterSpacing = (-3.2).sp,
     ),
     displayMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = fontFamily,
         fontSize = 52.sp,
         lineHeight = 54.sp,
         fontWeight = FontWeight.Black,
         letterSpacing = (-2).sp,
     ),
     headlineLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = fontFamily,
         fontSize = 38.sp,
         lineHeight = 42.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = (-1).sp,
     ),
     headlineMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = fontFamily,
         fontSize = 28.sp,
         lineHeight = 33.sp,
         fontWeight = FontWeight.Bold,
         letterSpacing = (-0.5).sp,
     ),
     titleLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = fontFamily,
         fontSize = 22.sp,
         lineHeight = 28.sp,
         fontWeight = FontWeight.Bold,
     ),
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = fontFamily,
         fontSize = 18.sp,
         lineHeight = 28.sp,
     ),
     bodyMedium = TextStyle(
-        fontFamily = FontFamily.SansSerif,
+        fontFamily = fontFamily,
         fontSize = 15.sp,
         lineHeight = 23.sp,
     ),
     labelLarge = TextStyle(
-        fontFamily = FontFamily.Monospace,
+        fontFamily = monoFontFamily,
         fontSize = 13.sp,
         lineHeight = 18.sp,
         fontWeight = FontWeight.Bold,
@@ -229,14 +232,26 @@ private val projects = listOf(
 fun App(
     openLink: (String) -> Unit,
     onReady: () -> Unit = {},
+    preloadedSiteSans: FontFamily? = null,
+    preloadedSiteMono: FontFamily? = null,
 ) {
     var darkTheme by remember { mutableStateOf(true) }
+    val siteSans = preloadedSiteSans ?: FontFamily(
+        Font(Res.font.roboto_f99820f9f1c7c171, FontWeight.Normal),
+        Font(Res.font.roboto_f99820f9f1c7c171, FontWeight.Medium),
+        Font(Res.font.roboto_f99820f9f1c7c171, FontWeight.Bold),
+        Font(Res.font.roboto_f99820f9f1c7c171, FontWeight.Black),
+    )
+    val siteMono = preloadedSiteMono ?: FontFamily(
+        Font(Res.font.roboto_mono_e7069fe300d4629b, FontWeight.Normal),
+        Font(Res.font.roboto_mono_e7069fe300d4629b, FontWeight.Bold),
+    )
 
     LaunchedEffect(Unit) { onReady() }
 
     MaterialTheme(
         colorScheme = if (darkTheme) DarkColors else LightColors,
-        typography = SiteTypography,
+        typography = siteTypography(siteSans, siteMono),
     ) {
         FramedPortfolio(
             darkTheme = darkTheme,
@@ -357,6 +372,10 @@ private fun Hero(compact: Boolean, openLink: (String) -> Unit) {
 
 @Composable
 private fun HeroCopy(compact: Boolean, openLink: (String) -> Unit) {
+    val buttonPadding = PaddingValues(
+        horizontal = if (compact) 18.dp else 26.dp,
+        vertical = 17.dp,
+    )
     Column {
         Eyebrow("// HELLO, WORLD")
         Spacer(Modifier.height(18.dp))
@@ -391,14 +410,14 @@ private fun HeroCopy(compact: Boolean, openLink: (String) -> Unit) {
             Button(
                 onClick = { openLink("https://github.com/itzephir") },
                 shape = CircleShape,
-                contentPadding = PaddingValues(horizontal = 26.dp, vertical = 17.dp),
+                contentPadding = buttonPadding,
             ) {
                 Text("Смотреть GitHub  >")
             }
             FilledTonalButton(
                 onClick = { openLink("https://t.me/ItzEphir") },
                 shape = CircleShape,
-                contentPadding = PaddingValues(horizontal = 26.dp, vertical = 17.dp),
+                contentPadding = buttonPadding,
             ) {
                 Text("Написать мне")
             }

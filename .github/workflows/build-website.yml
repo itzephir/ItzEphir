@@ -20,6 +20,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: deploy/package-lock.json
+
+      - name: Install browser-test dependencies
+        run: npm ci --prefix deploy --ignore-scripts
+
+      - name: Test release preparation
+        run: npm test --prefix deploy
+
       - name: Set up Java
         uses: actions/setup-java@v5
         with:
@@ -36,10 +49,7 @@ jobs:
         run: ./gradlew :website:wasmJsBrowserDistribution
 
       - name: Prepare optimized static assets
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y brotli
-          deploy/prepare-web-release.sh
+        run: deploy/prepare-web-release.sh
 
       - name: Upload static website artifact
         uses: actions/upload-artifact@v6
@@ -49,6 +59,38 @@ jobs:
           if-no-files-found: error
           retention-days: 14
 
+  visual:
+    name: Check startup shell against Compose
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: website-visual-${{ github.ref }}
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: deploy/package-lock.json
+
+      - name: Install browser-test dependencies
+        run: npm ci --prefix deploy --ignore-scripts
+
+      - name: Download production website
+        uses: actions/download-artifact@v7
+        with:
+          name: itzephir-website
+          path: dist
+
+      - name: Compare startup shell and Compose
+        env:
+          VISUAL_DIST: ${{ github.workspace }}/dist
+        run: CHROME_EXECUTABLE="$(command -v google-chrome)" npm run test:visual --prefix deploy
+
   deploy:
     name: Deploy ${{ github.event_name == 'pull_request' && 'PR preview' || 'production' }}
     # Forks and Dependabot PRs are checked, but never receive deployment secrets.
@@ -57,7 +99,7 @@ jobs:
       (github.event_name == 'pull_request' &&
        github.event.pull_request.head.repo.full_name == github.repository &&
        github.event.pull_request.user.login != 'dependabot[bot]')
-    needs: build
+    needs: [build, visual]
     runs-on: ubuntu-latest
     environment:
       name: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && 'production' || 'development' }}

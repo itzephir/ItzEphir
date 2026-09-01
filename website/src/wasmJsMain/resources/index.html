@@ -7,6 +7,12 @@
     <meta name="description" content="Персональный сайт Дмитрия Дворянникова — Mobile & Backend Kotlin developer из Москвы. Kotlin Multiplatform, Compose, Ktor, Swift и UIKit.">
     <meta name="theme-color" content="#121116">
     <meta name="color-scheme" content="dark light">
+    <script>
+        const platform = navigator.userAgent.includes("Macintosh")
+            ? "platform-macos"
+            : navigator.userAgent.includes("Linux") ? "platform-linux" : null;
+        if (platform) document.documentElement.classList.add(platform);
+    </script>
 
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://itzephir.com/">
@@ -18,8 +24,11 @@
     <link rel="canonical" href="https://itzephir.com/">
     <link rel="icon" href="favicon.svg" type="image/svg+xml">
     <link rel="preload" href="/composeResources/com.itzephir.website.generated.resources/drawable/avatar.jpg" as="image" fetchpriority="high">
+    <link rel="preload" href="/composeResources/com.itzephir.website.generated.resources/font/roboto_f99820f9f1c7c171.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="/composeResources/com.itzephir.website.generated.resources/font/roboto_mono_e7069fe300d4629b.ttf" as="font" type="font/ttf" crossorigin>
     <link rel="preload" href="itzephir.js" as="script">
-    <!-- WASM_PRELOADS -->
+    <!-- WASM_PRELOADS_START -->
+    <!-- WASM_PRELOADS_END -->
     <link rel="stylesheet" href="styles.css">
 
     <script type="application/ld+json">
@@ -50,14 +59,14 @@
 
                 <main class="shell-hero">
                     <section class="shell-copy">
-                        <span class="shell-eyebrow">// HELLO, WORLD</span>
+                        <span class="shell-eyebrow"><span>// HELLO, WORLD</span></span>
                         <h1>Дмитрий<br>Дворянников</h1>
                         <h2>Mobile &amp; Backend Kotlin Developer</h2>
                         <p class="shell-role">ЯНДЕКС&nbsp;&nbsp;/&nbsp;&nbsp;ЛЕКТОР ШМР 2026</p>
                         <p class="shell-lead">Делаю продукты, которыми хочется пользоваться: от мобильных интерфейсов до надёжных серверных систем.</p>
                         <div class="shell-actions">
-                            <a class="shell-button shell-button-primary" href="https://github.com/itzephir" target="_blank" rel="noopener noreferrer">Смотреть GitHub&nbsp; &gt;</a>
-                            <a class="shell-button shell-button-secondary" href="https://t.me/ItzEphir" target="_blank" rel="noopener noreferrer">Написать мне</a>
+                            <a class="shell-button shell-button-primary" href="https://github.com/itzephir" target="_blank" rel="noopener noreferrer"><span>Смотреть GitHub&nbsp; &gt;</span></a>
+                            <a class="shell-button shell-button-secondary" href="https://t.me/ItzEphir" target="_blank" rel="noopener noreferrer"><span>Написать мне</span></a>
                         </div>
                     </section>
                     <figure class="shell-portrait">
@@ -131,13 +140,30 @@
         })();
     </script>
     <script>
-        // Let the HTML shell paint before Compose initializes the canvas.
-        requestAnimationFrame(() => requestAnimationFrame(() => {
-            if (document.getElementById("app").classList.contains("compose-failed")) return;
-            const script = document.createElement("script");
-            script.src = "itzephir.js";
-            document.body.appendChild(script);
-        }));
+        (() => {
+            const app = document.getElementById("app");
+            const portrait = document.querySelector(".shell-portrait img");
+            const timeout = new Promise(resolve => window.setTimeout(resolve, 3000));
+            const assets = Promise.all([
+                document.fonts.load('900 76px "Site Sans"'),
+                document.fonts.load('700 13px "Site Mono"'),
+                portrait.decode().catch(() => undefined),
+            ]);
+
+            // The browser may otherwise paint styled surfaces one frame before
+            // their web-font labels and portrait. Reveal the complete shell in
+            // one frame, then start Compose behind it.
+            Promise.race([assets, timeout]).then(() => {
+                requestAnimationFrame(() => requestAnimationFrame(() => {
+                    app.classList.add("shell-ready");
+
+                    if (app.classList.contains("compose-failed")) return;
+                    const script = document.createElement("script");
+                    script.src = "itzephir.js";
+                    document.body.appendChild(script);
+                }));
+            });
+        })();
     </script>
 </body>
 </html>
